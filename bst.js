@@ -15,7 +15,7 @@ class Tree {
     buildTree(array) {
         const uniqueSortedArray = Array.from(new Set(array)).sort((a, b) => a - b);
 
-        function buildTreeRecursive(array) {
+        const buildTreeRecursive = (array) => {
             if (array.length === 0) return null;
 
             const mid = Math.floor(array.length / 2);
@@ -199,17 +199,14 @@ class Tree {
     }
 
     isBalanced() {
-        if (!this.root) return true;
-
-        const leftHeight = this.height(this.root.left);
-        const rightHeight = this.height(this.root.right);
-
-        return (
-            Math.abs(leftHeight - rightHeight) <= 1 &&
-            this.root.left.isBalanced() &&
-            this.root.right.isBalanced()
-        );
+        const leftHeight = this.height(this.left);
+        const rightHeight = this.height(this.right);
+        
+        return Math.abs(leftHeight - rightHeight) <= 1 &&
+               (!this.left || this.left.isBalanced()) &&
+               (!this.right || this.right.isBalanced());
     }
+
 
     reBalance() {
         const sortedNodes = [];
@@ -217,3 +214,58 @@ class Tree {
         this.root = this.buildTree(sortedNodes);
     }
 }
+
+function generateRandomArray(length, max) {
+    const randomNumbers = new Set();
+    while (randomNumbers.size < length) {
+        randomNumbers.add(Math.floor(Math.random() * max));
+    }
+    return Array.from(randomNumbers);
+}
+
+function runTreeDemo() {
+    const randomArray = generateRandomArray(15, 100);
+    console.log("Random numbers used to create the tree:", randomArray);
+
+    const tree = new Tree(randomArray);
+    console.log("Is the tree balanced?", tree.isBalanced());
+
+    console.log("Level order:");
+    tree.levelOrder(node => console.log(node.data));
+
+    console.log("Pre-order:");
+    tree.preOrder(node => console.log(node.data));
+
+    console.log("In-order:");
+    tree.inOrder(node => console.log(node.data));
+
+    console.log("Post-order:");
+    tree.postOrder(node => console.log(node.data));
+
+    // Unbalance the tree by adding numbers > 100
+    const unbalancedNumbers = [101, 102, 103, 104, 105];
+    unbalancedNumbers.forEach(num => tree.insert(num));
+    console.log("Inserted numbers to unbalance the tree:", unbalancedNumbers);
+
+    console.log("Is the tree balanced after inserting > 100?", tree.isBalanced());
+
+    // Balance the tree
+    tree.rebalance();
+    console.log("Tree rebalanced.");
+
+    console.log("Is the tree balanced after rebalancing?", tree.isBalanced());
+
+    console.log("Level order after rebalancing:");
+    tree.levelOrder(node => console.log(node.data));
+
+    console.log("Pre-order after rebalancing:");
+    tree.preOrder(node => console.log(node.data));
+
+    console.log("In-order after rebalancing:");
+    tree.inOrder(node => console.log(node.data));
+
+    console.log("Post-order after rebalancing:");
+    tree.postOrder(node => console.log(node.data));
+}
+
+runTreeDemo()
