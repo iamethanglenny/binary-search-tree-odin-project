@@ -197,4 +197,23 @@ class Tree {
         }
         return current ? depth : -1;
     }
+
+    isBalanced() {
+        if (!this.root) return true;
+
+        const leftHeight = this.height(this.root.left);
+        const rightHeight = this.height(this.root.right);
+
+        return (
+            Math.abs(leftHeight - rightHeight) <= 1 &&
+            this.root.left.isBalanced() &&
+            this.root.right.isBalanced()
+        );
+    }
+
+    reBalance() {
+        const sortedNodes = [];
+        this.inOrder(node => sortedNodes.push(node.data));
+        this.root = this.buildTree(sortedNodes);
+    }
 }
