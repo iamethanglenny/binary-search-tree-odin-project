@@ -88,10 +88,89 @@ class Tree {
         return node;
     }
 
-    _findMind(node) {
+    _findMin(node) {
         while (node.left) {
             node = node.left;
         }
         return node;
+    }
+
+    find(value) {
+        let current = this.root;
+
+        while (current) {
+            if (value === current.data) {
+                return current;
+            }
+            current = value < current.data ? current.left : current.right;
+        }
+        return null;
+    }
+
+    levelOrder(callback) {
+        if (typeof callback !== 'function') {
+            throw new Error('A callback function is required for levelOrder.')
+        }
+        const queue = [];
+        queue.push(this.root);
+
+        const traverse = (nodes) => {
+            if(!nodes.length) return null;
+
+            const nextLevel = [];
+            for (const node of nodes) {
+                callback(node);
+                if (node.left) nextLevel.push(node.left);
+                if (node.right) nextLevel.push(node.right);
+            }
+            traverse(nextLevel);
+        };
+
+        traverse(queue);
+    }
+
+    inOrder(callback) {
+        if (typeof callback !== 'function') {
+            throw new Error('A callback function is required for inOrder.');
+        }
+        this._inOrder(this.root, callback);
+    }
+
+    _inOrder(node, callback) {
+        if (node) {
+            this._inOrder(node.left, callback);
+            callback(node);
+            this._inOrder(node.right, callback);
+        }
+    }
+
+    preOrder(callback) {
+        if (typeof callback !== 'function') {
+            throw new Error('A callback function is required for preOrder.');
+        }
+        this._preOrder(this.root, callback);
+    }
+
+    _preOrder(node, callback) {
+        if (node) {
+            callback(node);
+            this._preOrder(node.left, callback);
+            this._preOrder(node.right, callback);
+        }
+    }
+
+    postOrder(callback) {
+        if (typeof callback !== 'function') {
+            throw new Error('A callback function is required for postOrder.');
+        }
+        this._postOrder(this.root, callback);
+    }
+
+    _postOrder(node, callback) {
+        if (node) {
+            this._postOrder(node.left, callback);
+            this._postOrder(node.right, callback);
+            callback(node);
+        }
     }
 }
